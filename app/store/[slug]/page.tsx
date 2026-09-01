@@ -1,6 +1,7 @@
-import { ArrowRight, Instagram, Music2, Youtube } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { StorefrontTracker, TrackedPurchaseLink } from '@/components/storefront-tracker';
 
 type Product = {
   id: string; name: string; slug: string; description?: string | null; price?: number | null;
@@ -40,6 +41,7 @@ export default async function Storefront({ params }: { params: Promise<{ slug: s
   const accent = typeof theme.accent === 'string' ? theme.accent : undefined;
 
   return <main className="storefront-page" style={accent ? { ['--store-accent' as string]: accent } : undefined}>
+    <StorefrontTracker organizationId={store.organization.id} />
     <header className="store-header">
       <div className="store-identity">
         {store.organization.logo_url ? <img className="store-logo" src={store.organization.logo_url} alt={store.organization.name}/> : <div className="signature">{store.organization.name.slice(0, 1).toUpperCase()}</div>}
@@ -48,7 +50,7 @@ export default async function Storefront({ params }: { params: Promise<{ slug: s
     </header>
 
     {featured && <section className="featured">
-      <div className="featured-copy"><span>• DESTAQUE</span><h2>{featured.name}</h2>{featured.description && <p>{featured.description}</p>}<div className="buy-line"><a href={featured.purchase_url} target="_blank" rel="noopener noreferrer">Comprar agora <ArrowRight size={18}/></a>{money(featured) && <div><strong>{money(featured)}</strong></div>}</div></div>
+      <div className="featured-copy"><span>• DESTAQUE</span><h2>{featured.name}</h2>{featured.description && <p>{featured.description}</p>}<div className="buy-line"><TrackedPurchaseLink organizationId={store.organization.id} productId={featured.id} href={featured.purchase_url}>Comprar agora <ArrowRight size={18}/></TrackedPurchaseLink>{money(featured) && <div><strong>{money(featured)}</strong></div>}</div></div>
       {imageFor(featured.images?.[0]?.storage_path) && <div className="featured-art"><img src={imageFor(featured.images?.[0]?.storage_path)!} alt={featured.name}/></div>}
     </section>}
 
@@ -59,7 +61,7 @@ export default async function Storefront({ params }: { params: Promise<{ slug: s
       return <article className="store-card" key={item.id}>
         {image ? <a className="store-card-image" href={`/store/${store.organization.slug}/${item.slug}`}><img src={image} alt={item.name}/></a> : <a className="store-card-image no-image" href={`/store/${store.organization.slug}/${item.slug}`} aria-label={`View ${item.name}`}><span>Product Hub</span></a>}
         {item.provider && <span className="category-label">{item.provider}</span>}<h3>{item.name}</h3>{item.description && <p>{item.description}</p>}
-        <div className="card-footer"><a href={item.purchase_url} target="_blank" rel="noopener noreferrer">Comprar <ArrowRight size={16}/></a>{price && <strong>{price}</strong>}</div>
+        <div className="card-footer"><TrackedPurchaseLink organizationId={store.organization.id} productId={item.id} href={item.purchase_url}>Comprar <ArrowRight size={16}/></TrackedPurchaseLink>{price && <strong>{price}</strong>}</div>
       </article>;
     })}</section>}
 
