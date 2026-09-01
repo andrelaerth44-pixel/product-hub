@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -8,6 +9,15 @@ import styles from './product-detail.module.css';
 type ProductImage={storage_path:string};
 type Product={id:string;name:string;slug:string;description?:string|null;price?:number|null;currency?:string|null;purchase_url:string;provider?:string|null;images?:ProductImage[]};
 type StoreData={organization:{id:string;name:string;slug:string};products:Product[]};
+
+async function getStore(slug:string){const supabase=await createClient();const {data,error}=await supabase.rpc('get_public_storefront',{store_slug:slug});if(error||!data?.organization)return null;return data as StoreData}
+
+export async function generateMetadata({params}:{params:Promise<{slug:string;product:string}>}):Promise<Metadata>{
+ const {slug,product}=await params;const store=await getStore(slug);const item=store?.products?.find(p=>p.slug===product);if(!store||!item)return {title:'Product | Product Hub'};
+ const title=`${item.name} | ${store.organization.name}`;const description=item.description||`Discover ${item.name} from ${store.organization.name}.`;const path=item.images?.[0]?.storage_path;const image=path?.startsWith('http')?path:path?(await createClient()).storage.from('product-images').getPublicUrl(path).data.publicUrl:undefined;
+ return {title,description,openGraph:{title,description,type:'website',images:image?[{url:image}]:[]},twitter:{card:'summary_large_image',title,description,images:image?[image]:[]}};
+}
+
 export default async function ProductPage({params}:{params:Promise<{slug:string;product:string}>}){
  const {slug,product:productSlug}=await params;const supabase=await createClient();const {data,error}=await supabase.rpc('get_public_storefront',{store_slug:slug});if(error||!data?.organization)notFound();const store=data as StoreData;const item=(store.products||[]).find(p=>p.slug===productSlug);if(!item)notFound();
  const path=item.images?.[0]?.storage_path;const image=path?.startsWith('http')?path:path?supabase.storage.from('product-images').getPublicUrl(path).data.publicUrl:null;let price:string|null=null;if(item.price!=null){try{price=new Intl.NumberFormat('pt-PT',{style:'currency',currency:item.currency||'AOA'}).format(item.price)}catch{price=`${item.currency||''} ${item.price}`.trim()}}
