@@ -24,13 +24,13 @@ function getDeviceType() {
 export function trackStorefrontEvent(organizationId: string, eventType: EventType, productId?: string) {
   if (typeof window === 'undefined') return;
   const supabase = createClient();
-  void supabase.from('analytics_events').insert({
-    organization_id: organizationId,
-    product_id: productId ?? null,
+  void supabase.rpc('record_analytics_event', {
+    event_organization_id: organizationId,
+    event_product_id: productId ?? null,
     event_type: eventType,
-    session_id: getSessionId(),
-    referrer: document.referrer || null,
-    device_type: getDeviceType(),
+    event_session_id: getSessionId(),
+    event_referrer: document.referrer || null,
+    event_device_type: getDeviceType(),
   });
 }
 
