@@ -20,10 +20,12 @@ function money(product: Product) {
   try { return new Intl.NumberFormat('pt-PT', { style: 'currency', currency: product.currency || 'AOA' }).format(product.price); }
   catch { return `${product.currency || ''} ${product.price}`.trim(); }
 }
-function imageFor(path?: string | null) {
+
+async function imageFor(path?: string | null) {
   if (!path) return null;
   if (path.startsWith('http')) return path;
-  const { data } = createClient().storage.from('product-images').getPublicUrl(path);
+  const supabase = await createClient();
+  const { data } = supabase.storage.from('product-images').getPublicUrl(path);
   return data.publicUrl;
 }
 
@@ -39,7 +41,8 @@ export default async function Storefront({ params }: { params: Promise<{ slug: s
   const categories = Array.from(new Set(products.map(p => p.provider).filter(Boolean))) as string[];
   const theme = store.storefront.theme_settings || {};
   const accent = typeof theme.accent === 'string' ? theme.accent : '#1f1f1f';
-  const featuredImage = imageFor(featured?.images?.[0]?.storage_path);
+  const featuredImage = await imageFor(featured?.images?.[0]?.storage_path);
+  const restWithImages = await Promise.all(rest.map(async item => ({ item, image: await imageFor(item.images?.[0]?.storage_path) })));
 
   return <main className={styles.page} style={{ ['--accent' as string]: accent }}><div className={styles.inner}>
     <StorefrontTracker organizationId={store.organization.id} />
@@ -55,7 +58,7 @@ export default async function Storefront({ params }: { params: Promise<{ slug: s
 
     {products.length > 0 && <nav className={styles.nav} aria-label="Produtos"><button className={`${styles.filter} ${styles.filterActive}`}>Todos</button>{categories.map(category => <button className={styles.filter} key={category}>{category}</button>)}</nav>}
 
-    {rest.length > 0 && <section className={styles.grid}>{rest.map(item => { const image=imageFor(item.images?.[0]?.storage_path); const price=money(item); return <article className={styles.card} key={item.id}>
+    {rest.length > 0 && <section className={styles.grid}>{restWithImages.map(({ item, image }) => { const price=money(item); return <article className={styles.card} key={item.id}>
       {image ? <a className={styles.cardImage} href={`/store/${store.organization.slug}/${item.slug}`}><img src={image} alt={item.name}/></a> : <a className={`${styles.cardImage} ${styles.noImage}`} href={`/store/${store.organization.slug}/${item.slug}`}>Product Hub</a>}
       <div className={styles.cardBody}>{item.provider && <span className={styles.label}>{item.provider}</span>}<h3 className={styles.cardTitle}>{item.name}</h3>{item.description && <p className={styles.cardDescription}>{item.description}</p>}
         <div className={styles.cardFooter}><TrackedPurchaseLink organizationId={store.organization.id} productId={item.id} href={item.purchase_url} className={styles.cardBuy}>Comprar <ArrowRight size={14}/></TrackedPurchaseLink>{price && <strong className={styles.cardPrice}>{price}</strong>}</div>
