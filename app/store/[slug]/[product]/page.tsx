@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { ProductViewTracker, TrackedPurchaseLink } from '@/components/storefront-tracker';
-import './product-detail.css';
 
 type ProductImage={storage_path:string};
 type Product={id:string;name:string;slug:string;description?:string|null;price?:number|null;currency?:string|null;purchase_url:string;provider?:string|null;images?:ProductImage[]};
