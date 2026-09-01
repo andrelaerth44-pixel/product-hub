@@ -2,6 +2,7 @@ import { ArrowRight } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { StorefrontTracker, TrackedPurchaseLink } from '@/components/storefront-tracker';
+import styles from '../storefront.module.css';
 
 type Product = {
   id: string; name: string; slug: string; description?: string | null; price?: number | null;
@@ -19,7 +20,6 @@ function money(product: Product) {
   try { return new Intl.NumberFormat('pt-PT', { style: 'currency', currency: product.currency || 'AOA' }).format(product.price); }
   catch { return `${product.currency || ''} ${product.price}`.trim(); }
 }
-
 function imageFor(path?: string | null) {
   if (!path) return null;
   if (path.startsWith('http')) return path;
@@ -38,34 +38,30 @@ export default async function Storefront({ params }: { params: Promise<{ slug: s
   const rest = products.filter(p => p.id !== featured?.id);
   const categories = Array.from(new Set(products.map(p => p.provider).filter(Boolean))) as string[];
   const theme = store.storefront.theme_settings || {};
-  const accent = typeof theme.accent === 'string' ? theme.accent : undefined;
+  const accent = typeof theme.accent === 'string' ? theme.accent : '#1f1f1f';
+  const featuredImage = imageFor(featured?.images?.[0]?.storage_path);
 
-  return <main className="storefront-page" style={accent ? { ['--store-accent' as string]: accent } : undefined}>
+  return <main className={styles.page} style={{ ['--accent' as string]: accent }}><div className={styles.inner}>
     <StorefrontTracker organizationId={store.organization.id} />
-    <header className="store-header">
-      <div className="store-identity">
-        {store.organization.logo_url ? <img className="store-logo" src={store.organization.logo_url} alt={store.organization.name}/> : <div className="signature">{store.organization.name.slice(0, 1).toUpperCase()}</div>}
-        <div><h1>{store.organization.name}</h1>{store.organization.description && <p>{store.organization.description}</p>}</div>
-      </div>
-    </header>
+    <header className={styles.header}><div className={styles.identity}>
+      {store.organization.logo_url ? <img className={styles.logo} src={store.organization.logo_url} alt={store.organization.name}/> : <div className={styles.monogram}>{store.organization.name.slice(0,1).toUpperCase()}</div>}
+      <h1 className={styles.name}>{store.organization.name}</h1>{store.organization.description && <p className={styles.bio}>{store.organization.description}</p>}
+    </div></header>
 
-    {featured && <section className="featured">
-      <div className="featured-copy"><span>• DESTAQUE</span><h2>{featured.name}</h2>{featured.description && <p>{featured.description}</p>}<div className="buy-line"><TrackedPurchaseLink organizationId={store.organization.id} productId={featured.id} href={featured.purchase_url}>Comprar agora <ArrowRight size={18}/></TrackedPurchaseLink>{money(featured) && <div><strong>{money(featured)}</strong></div>}</div></div>
-      {imageFor(featured.images?.[0]?.storage_path) && <div className="featured-art"><img src={imageFor(featured.images?.[0]?.storage_path)!} alt={featured.name}/></div>}
-    </section>}
+    {featured && <section className={styles.featured}><div className={styles.featuredCopy}>
+      <span className={styles.eyebrow}>DESTAQUE</span><h2 className={styles.title}>{featured.name}</h2>{featured.description && <p className={styles.description}>{featured.description}</p>}
+      <div className={styles.buyLine}><TrackedPurchaseLink organizationId={store.organization.id} productId={featured.id} href={featured.purchase_url} className={styles.buy}>Comprar agora <ArrowRight size={17}/></TrackedPurchaseLink>{money(featured) && <strong className={styles.price}>{money(featured)}</strong>}</div>
+    </div>{featuredImage && <div className={styles.featuredArt}><img src={featuredImage} alt={featured.name}/></div>}</section>}
 
-    {products.length > 0 && <div className="category-nav"><button className="selected">Todos</button>{categories.map(category => <button key={category}>{category}</button>)}</div>}
+    {products.length > 0 && <nav className={styles.nav} aria-label="Produtos"><button className={`${styles.filter} ${styles.filterActive}`}>Todos</button>{categories.map(category => <button className={styles.filter} key={category}>{category}</button>)}</nav>}
 
-    {rest.length > 0 && <section className="product-grid">{rest.map((item) => {
-      const image = imageFor(item.images?.[0]?.storage_path); const price = money(item);
-      return <article className="store-card" key={item.id}>
-        {image ? <a className="store-card-image" href={`/store/${store.organization.slug}/${item.slug}`}><img src={image} alt={item.name}/></a> : <a className="store-card-image no-image" href={`/store/${store.organization.slug}/${item.slug}`} aria-label={`View ${item.name}`}><span>Product Hub</span></a>}
-        {item.provider && <span className="category-label">{item.provider}</span>}<h3>{item.name}</h3>{item.description && <p>{item.description}</p>}
-        <div className="card-footer"><TrackedPurchaseLink organizationId={store.organization.id} productId={item.id} href={item.purchase_url}>Comprar <ArrowRight size={16}/></TrackedPurchaseLink>{price && <strong>{price}</strong>}</div>
-      </article>;
-    })}</section>}
+    {rest.length > 0 && <section className={styles.grid}>{rest.map(item => { const image=imageFor(item.images?.[0]?.storage_path); const price=money(item); return <article className={styles.card} key={item.id}>
+      {image ? <a className={styles.cardImage} href={`/store/${store.organization.slug}/${item.slug}`}><img src={image} alt={item.name}/></a> : <a className={`${styles.cardImage} ${styles.noImage}`} href={`/store/${store.organization.slug}/${item.slug}`}>Product Hub</a>}
+      <div className={styles.cardBody}>{item.provider && <span className={styles.label}>{item.provider}</span>}<h3 className={styles.cardTitle}>{item.name}</h3>{item.description && <p className={styles.cardDescription}>{item.description}</p>}
+        <div className={styles.cardFooter}><TrackedPurchaseLink organizationId={store.organization.id} productId={item.id} href={item.purchase_url} className={styles.cardBuy}>Comprar <ArrowRight size={14}/></TrackedPurchaseLink>{price && <strong className={styles.cardPrice}>{price}</strong>}</div>
+      </div></article>; })}</section>}
 
-    {!products.length && <div className="store-empty"><h2>Nenhum produto publicado.</h2><p>Esta vitrine ainda não tem produtos disponíveis.</p></div>}
-    <footer className="store-footer"><span>Product Hub</span><span>{store.organization.name}</span></footer>
-  </main>;
+    {!products.length && <div className={styles.empty}><h2>Nenhum produto publicado.</h2><p>Esta vitrine ainda não tem produtos disponíveis.</p></div>}
+    <footer className={styles.footer}><span>Product Hub</span><strong>{store.organization.name}</strong></footer>
+  </div></main>;
 }
