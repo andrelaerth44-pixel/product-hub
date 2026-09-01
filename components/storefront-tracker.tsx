@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
-type EventType = 'store_view' | 'product_click';
+type EventType = 'store_view' | 'product_view' | 'product_click';
 
 function getSessionId() {
   const key = 'product-hub-analytics-session';
@@ -21,13 +21,30 @@ function getDeviceType() {
   return 'desktop';
 }
 
+export function trackStorefrontEvent(
+  organizationId: string,
+  eventType: EventType,
+  productId?: string,
+) {
+  if (typeof window === 'undefined') return;
+  const supabase = createClient();
+  void supabase.from('analytics_events').insert({
+    organization_id: organizationId,
+    product_id: productId ?? null,
+    event_type: eventType,
+    session_id: getSessionId(),
+    referrer: document.referrer || null,
+    device_type: getDeviceType(),
+  });
+}
+
 export function StorefrontTracker({
   organizationId,
-  eventType,
+  eventType = 'store_view',
   productId,
 }: {
   organizationId: string;
-  eventType: EventType;
+  eventType?: EventType;
   productId?: string;
 }) {
   const sent = useRef(false);
@@ -35,40 +52,34 @@ export function StorefrontTracker({
   useEffect(() => {
     if (sent.current) return;
     sent.current = true;
-
-    const supabase = createClient();
-    const payload = {
-      organization_id: organizationId,
-      product_id: productId ?? null,
-      event_type: eventType,
-      session_id: getSessionId(),
-      referrer: document.referrer || null,
-      device_type: getDeviceType(),
-    };
-
-    void supabase.from('analytics_events').insert(payload);
+    trackStorefrontEvent(organizationId, eventType, productId);
   }, [eventType, organizationId, productId]);
 
   return null;
 }
 
-export function ProductClickTracker({
+export function TrackedPurchaseLink({
   organizationId,
   productId,
+  href,
+  children,
+  className,
 }: {
   organizationId: string;
   productId: string;
+  href: string;
+  children: React.ReactNode;
+  className?: string;
 }) {
-  const supabase = createClient();
-
-  return async function trackProductClick() {
-    await supabase.from('analytics_events').insert({
-      organization_id: organizationId,
-      product_id: productId,
-      event_type: 'product_click',
-      session_id: getSessionId(),
-      referrer: document.referrer || null,
-      device_type: getDeviceType(),
-    });
-  };
+  return (
+    <a
+      href={href}
+      className={className}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={() => trackStorefrontEvent(organizationId, 'product_click', productId)}
+    >
+      {children}
+    </a>
+  );
 }
