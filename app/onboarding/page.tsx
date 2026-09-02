@@ -5,7 +5,7 @@ import { ArrowRight, Check, Globe2, Store } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import styles from './onboarding.module.css';
 
-const WELCOME_VIDEO = 'https://cdn.creativeclaw.co/u/14466949/videos/c3ac8ca4-44dd-4881-8ccb-fd490f92b4d0.mp4';
+const WELCOME_VIDEO = 'https://cdn.creativeclaw.co/u/51a597e8/videos/79ba29f5-88cd-4a18-8b58-8a9e2abd9d95.mp4';
 const slugify = (value: string) => value.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,40);
 
 export default function OnboardingPage() {
