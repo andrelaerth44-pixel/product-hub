@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowUpRight, Activity, Sparkles } from 'lucide-react';
 import styles from './dashboard-hero.module.css';
-import { AmbientVideo } from './ambient-video';
 
 const HERO_IMAGE = 'https://cdn.creativeclaw.co/u/14466949/images/b0b66306-8a03-4e42-ba7d-31bcd286d41a.png';
 
@@ -37,7 +36,6 @@ export function DashboardHero({ name, views, clicks, products }: { name?: string
         </div>
       </div>
       <div className={styles.visual}>
-        <AmbientVideo src="/videos/dashboard-hero.mp4" poster={HERO_IMAGE} className={styles.video} ariaLabel="Ambiente visual do Product Hub" />
         <img className={styles.poster} src={HERO_IMAGE} alt="" loading="eager" />
         <div className={styles.orbit} />
         <div className={styles.dataCard}><div><Activity size={14} /><span>Commerce pulse</span></div><strong>{clicks ? `${((clicks / Math.max(views, 1)) * 100).toFixed(1)}%` : '0.0%'}</strong><small>CTR actual</small></div>
