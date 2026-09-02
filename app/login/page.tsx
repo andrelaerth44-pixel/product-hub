@@ -5,7 +5,7 @@ import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Eye, EyeOff, LockKeyhole, ArrowRight, ShieldCheck } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import AmbientVideo from '@/components/ambient-video';
+import { AmbientVideo } from '@/components/ambient-video';
 
 function LoginForm() {
   const router = useRouter();
