@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import AmbientVideo from './ambient-video';
+import { AmbientVideo } from './ambient-video';
 
 const SEEN_KEY = 'product-hub:intro-seen:v1';
 
