@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import './product-hub-theme.css';
+import '../dashboard-overrides.css';
 import FirstVisitIntro from '@/components/first-visit-intro';
 
 export const metadata: Metadata = {
