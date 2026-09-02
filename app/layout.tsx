@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import './product-hub-theme.css';
+import FirstVisitIntro from '@/components/first-visit-intro';
 
 export const metadata: Metadata = {
   title: 'Product Hub — All your products. One place.',
@@ -9,8 +10,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="pt">
+      <body>{children}<FirstVisitIntro /></body>
     </html>
   );
 }
