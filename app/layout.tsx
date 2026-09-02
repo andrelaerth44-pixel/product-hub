@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './product-hub-theme.css';
 
 export const metadata: Metadata = {
   title: 'Product Hub — All your products. One place.',
