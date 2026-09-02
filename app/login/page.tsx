@@ -5,7 +5,6 @@ import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Eye, EyeOff, LockKeyhole, ArrowRight, ShieldCheck } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import { AmbientVideo } from '@/components/ambient-video';
 
 function withTimeout<T>(promise: PromiseLike<T>, ms: number, message: string): Promise<T> {
   return Promise.race([
@@ -31,33 +30,37 @@ function LoginForm() {
     const supabase = createClient();
 
     try {
-      const { data, error: signInError } = await withTimeout(
+      const result = await withTimeout(
         supabase.auth.signInWithPassword({ email: email.trim(), password }),
         10000,
-        'O servidor demorou demasiado a responder. Verifique a ligação e tente novamente.'
+        'O servidor demorou demasiado a responder. Verifica a ligação e tenta novamente.'
       );
+      const { data, error: signInError } = result;
       if (signInError) throw signInError;
-      if (!data.user) throw new Error('A sua conta não pôde ser carregada. Tente entrar novamente.');
+      if (!data.user) throw new Error('A tua conta não pôde ser carregada. Tenta entrar novamente.');
 
       let destination = searchParams.get('next') || '/dashboard';
       if (!searchParams.get('next')) {
         try {
-          const { data: membership, error: membershipError } = await withTimeout(
+          const membershipResult = await withTimeout(
             supabase.from('organization_members').select('organization_id').eq('user_id', data.user.id).limit(1).maybeSingle(),
             5000,
-            'A sessão entrou, mas a configuração do workspace demorou demasiado.'
+            'workspace-timeout'
           );
+          const { data: membership, error: membershipError } = membershipResult;
           if (!membershipError && !membership?.organization_id) destination = '/onboarding';
         } catch {
-          // Do not trap the user on “A verificar”. A valid Supabase session is enough to continue.
+          // A autenticação já foi confirmada. Nunca deixar o utilizador preso no estado de loading.
           destination = '/dashboard';
         }
       }
 
+      // Stop the loading UI before navigation so a slow route transition cannot leave the button frozen.
+      setLoading(false);
       router.replace(destination);
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Não foi possível entrar. Verifique os seus dados e tente novamente.');
+      setError(err instanceof Error ? err.message : 'Não foi possível entrar. Verifica os teus dados e tenta novamente.');
       setLoading(false);
     }
   }
@@ -66,7 +69,7 @@ function LoginForm() {
     <main className="auth-page-premium">
       <section className="auth-visual" aria-hidden="true">
         {loading ? (
-          <AmbientVideo src="/videos/login-de-processamento.mp4" poster="/videos/login-de-processamento.jpg" className="auth-video" priority ariaLabel="Processamento seguro do login" />
+          <video className="auth-video" autoPlay muted loop playsInline preload="auto" src="https://cdn.creativeclaw.co/u/14466949/videos/8ecd2354-e0e4-4cb3-8820-d52cbf4fab89.mp4" />
         ) : (
           <div className="auth-static-visual"><div className="auth-orb auth-orb-one" /><div className="auth-orb auth-orb-two" /><div className="auth-grid" /><div className="auth-product-mark"><span className="hub-logo">P</span></div></div>
         )}
