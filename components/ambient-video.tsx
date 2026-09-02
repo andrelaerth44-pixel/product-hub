@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 type Props = {
   src: string;
@@ -10,50 +10,50 @@ type Props = {
   priority?: boolean;
 };
 
-export function AmbientVideo({ src, poster, className = '', ariaLabel, priority = false }: Props) {
+/**
+ * AmbientVideo is intentionally continuous: every Product Hub video uses
+ * native looping and is kept playing whenever the browser allows autoplay.
+ * The browser may still pause media for its own policies or resource-saving,
+ * so visibility changes are used to resume playback when the element returns.
+ */
+export function AmbientVideo({ src, poster, className = '', ariaLabel }: Props) {
   const ref = useRef<HTMLVideoElement>(null);
-  const [enabled, setEnabled] = useState(priority);
-
-  useEffect(() => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (reduce.matches) { setEnabled(false); return; }
-    if (priority) { setEnabled(true); return; }
-    const node = ref.current;
-    if (!node) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setEnabled(true);
-        observer.disconnect();
-      }
-    }, { rootMargin: '160px' });
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [priority]);
 
   useEffect(() => {
     const video = ref.current;
-    if (!video || !enabled) return;
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const sync = () => {
-      if (reduce.matches) video.pause();
-      else video.play().catch(() => undefined);
+    if (!video) return;
+
+    const play = () => {
+      if (document.hidden) return;
+      video.play().catch(() => undefined);
     };
-    sync();
-    reduce.addEventListener?.('change', sync);
-    return () => reduce.removeEventListener?.('change', sync);
-  }, [enabled]);
+
+    video.addEventListener('loadeddata', play);
+    video.addEventListener('canplay', play);
+    document.addEventListener('visibilitychange', play);
+    window.addEventListener('pageshow', play);
+
+    play();
+
+    return () => {
+      video.removeEventListener('loadeddata', play);
+      video.removeEventListener('canplay', play);
+      document.removeEventListener('visibilitychange', play);
+      window.removeEventListener('pageshow', play);
+    };
+  }, [src]);
 
   return (
     <video
       ref={ref}
       className={className}
-      src={enabled ? src : undefined}
+      src={src}
       poster={poster}
       autoPlay
       muted
       loop
       playsInline
-      preload={priority ? 'metadata' : 'none'}
+      preload="auto"
       aria-label={ariaLabel}
       aria-hidden={!ariaLabel}
       disablePictureInPicture
