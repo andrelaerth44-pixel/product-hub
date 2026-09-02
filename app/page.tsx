@@ -4,7 +4,7 @@ import styles from './home.module.css';
 import { ScrollVideo } from '@/components/scroll-video';
 
 const videos = [
-  { src: 'https://dnznrvs05pmza.cloudfront.net/e78d6f68-9376-4aad-9728-c95b912ce055.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYzI2YjE2ZmNiYmUwMmM5MyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc4ODUwNTM0MH0.j-OtzTqhNjEpRQ6SkWotIIsSs1UyNQEvnglddu0TAsE', index: '01 / ABERTURA', title: 'O teu negócio começa aqui.', text: 'Uma entrada cinematográfica para o Product Hub, com o produto no centro e sem ruído visual.' },
+  { src: 'https://cdn.creativeclaw.co/u/14466949/videos/17a625ae-045a-4141-ad46-0ff8bd210196.mp4', index: '01 / ABERTURA', title: 'O teu negócio começa aqui.', text: 'Uma entrada cinematográfica para o Product Hub, com o produto no centro e sem ruído visual.' },
   { src: 'https://cdn.creativeclaw.co/u/14466949/videos/8ecd2354-e0e4-4cb3-8820-d52cbf4fab89.mp4', index: '02 / ACESSO', title: 'Entra. Continua. Está tudo no lugar.', text: 'O acesso acontece sem tirar o utilizador da experiência.' },
   { src: 'https://cdn.creativeclaw.co/u/14466949/videos/c3ac8ca4-44dd-4881-8ccb-fd490f92b4d0.mp4', index: '03 / WORKSPACE', title: 'O teu workspace ganha vida.', text: 'Organiza produtos, categorias e a tua presença digital num só espaço.' },
   { src: 'https://cdn.creativeclaw.co/u/14466949/videos/5c0e25e5-cbbd-4542-87eb-90a0656402b2.mp4', index: '04 / VITRINE', title: 'Uma vitrine que parece tua.', text: 'Apresenta os teus produtos com uma experiência premium, responsiva e pronta para partilhar.' },
