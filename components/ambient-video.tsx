@@ -11,10 +11,12 @@ type Props = {
 };
 
 /**
- * AmbientVideo is intentionally continuous: every Product Hub video uses
- * native looping and is kept playing whenever the browser allows autoplay.
- * The browser may still pause media for its own policies or resource-saving,
- * so visibility changes are used to resume playback when the element returns.
+ * Continuous Product Hub video.
+ *
+ * The video is deliberately not lazy-loaded, paused off-screen, or disabled
+ * by prefers-reduced-motion. Native looping handles the normal cycle while
+ * the recovery handlers restart playback if a browser unexpectedly reaches
+ * the end, pauses, or temporarily stalls the element.
  */
 export function AmbientVideo({ src, poster, className = '', ariaLabel }: Props) {
   const ref = useRef<HTMLVideoElement>(null);
@@ -23,23 +25,51 @@ export function AmbientVideo({ src, poster, className = '', ariaLabel }: Props) 
     const video = ref.current;
     if (!video) return;
 
-    const play = () => {
-      if (document.hidden) return;
+    video.loop = true;
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+
+    const resume = () => {
+      if (document.hidden || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return;
       video.play().catch(() => undefined);
     };
 
-    video.addEventListener('loadeddata', play);
-    video.addEventListener('canplay', play);
-    document.addEventListener('visibilitychange', play);
-    window.addEventListener('pageshow', play);
+    const restart = () => {
+      if (document.hidden) return;
+      try {
+        video.currentTime = 0;
+      } catch {
+        // Ignore seek errors while the media is changing source.
+      }
+      video.play().catch(() => undefined);
+    };
 
-    play();
+    const handlePause = () => resume();
+    const handleEnded = () => restart();
+    const handleStalled = () => resume();
+    const handleCanPlay = () => resume();
+
+    video.addEventListener('pause', handlePause);
+    video.addEventListener('ended', handleEnded);
+    video.addEventListener('stalled', handleStalled);
+    video.addEventListener('canplay', handleCanPlay);
+    video.addEventListener('loadeddata', handleCanPlay);
+    document.addEventListener('visibilitychange', resume);
+    window.addEventListener('pageshow', resume);
+    window.addEventListener('focus', resume);
+
+    resume();
 
     return () => {
-      video.removeEventListener('loadeddata', play);
-      video.removeEventListener('canplay', play);
-      document.removeEventListener('visibilitychange', play);
-      window.removeEventListener('pageshow', play);
+      video.removeEventListener('pause', handlePause);
+      video.removeEventListener('ended', handleEnded);
+      video.removeEventListener('stalled', handleStalled);
+      video.removeEventListener('canplay', handleCanPlay);
+      video.removeEventListener('loadeddata', handleCanPlay);
+      document.removeEventListener('visibilitychange', resume);
+      window.removeEventListener('pageshow', resume);
+      window.removeEventListener('focus', resume);
     };
   }, [src]);
 
