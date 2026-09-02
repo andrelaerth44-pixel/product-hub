@@ -1,0 +1,11 @@
+'use client';
+
+import Link from 'next/link';
+import { useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
+
+export default function ResetPassword(){
+ const [password,setPassword]=useState(''); const [confirm,setConfirm]=useState(''); const [loading,setLoading]=useState(false); const [message,setMessage]=useState(''); const [success,setSuccess]=useState(false);
+ async function submit(e:React.FormEvent){e.preventDefault();if(loading)return;setMessage('');setSuccess(false);if(password.length<8){setMessage('A palavra-passe deve ter pelo menos 8 caracteres.');return}if(password!==confirm){setMessage('As palavras-passe não coincidem.');return}setLoading(true);try{const {error}=await createClient().auth.updateUser({password});if(error)throw error;setSuccess(true);setMessage('Palavra-passe atualizada. Já podes entrar na tua conta.');}catch(err){setMessage(err instanceof Error?err.message:'Não foi possível atualizar a palavra-passe.')}finally{setLoading(false)}}
+ return <main className="auth-page-premium"><section className="auth-panel" style={{width:'100%'}}><div className="auth-card-premium"><div className="auth-brand-premium"><span className="hub-logo">P</span><strong>Product Hub</strong></div><div className="auth-heading"><span>Segurança da conta</span><h1>Define uma nova palavra-passe.</h1><p>Escolhe uma palavra-passe forte com pelo menos 8 caracteres.</p></div>{success?<div className="auth-error auth-success" role="status">{message}</div>:<form onSubmit={submit}><label>Nova palavra-passe<input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Pelo menos 8 caracteres" minLength={8} required autoComplete="new-password" disabled={loading}/></label><label>Confirmar palavra-passe<input type="password" value={confirm} onChange={e=>setConfirm(e.target.value)} placeholder="Repete a palavra-passe" minLength={8} required autoComplete="new-password" disabled={loading}/></label>{message&&<div className="auth-error" role="alert">{message}</div>}<button className="primary auth-submit" disabled={loading}>{loading?'A atualizar…':'Atualizar palavra-passe'}</button></form>}<small><Link href="/login">Voltar para entrar</Link></small></div></section></main>;
+}
