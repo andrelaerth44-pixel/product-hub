@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 const SEEN_KEY = 'product-hub:intro-seen:v1';
-const OPENING_VIDEO = 'https://cdn.creativeclaw.co/u/14466949/videos/7df8835e-2d90-4480-86fe-b2a59a2a45fa.mp4';
+const OPENING_VIDEO = 'https://cdn.creativeclaw.co/u/51a597e8/videos/dba67c43-dd48-4edf-b5f9-aa489c0e41e1.mp4';
 
 export default function FirstVisitIntro() {
   const [visible, setVisible] = useState(false);
