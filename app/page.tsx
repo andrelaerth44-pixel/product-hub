@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import { ArrowRight, BarChart3, Check, MousePointer2, Sparkles } from 'lucide-react';
 import styles from './home.module.css';
+import { ScrollVideo } from '@/components/scroll-video';
 
 const videos = [
-  { src: '/videos/abertura-do-product-hub.mp4', index: '01 / ABERTURA', title: 'O teu negócio começa aqui.', text: 'Uma entrada cinematográfica para o Product Hub, com o produto no centro e sem ruído visual.' },
-  { src: '/videos/login-de-processamento.mp4', index: '02 / ACESSO', title: 'Entra. Continua. Está tudo no lugar.', text: 'O acesso acontece sem tirar o utilizador da experiência.' },
-  { src: '/videos/welcome.mp4', index: '03 / WORKSPACE', title: 'O teu workspace ganha vida.', text: 'Organiza produtos, categorias e a tua presença digital num só espaço.' },
-  { src: '/videos/vitrine.mp4', index: '04 / VITRINE', title: 'Uma vitrine que parece tua.', text: 'Apresenta os teus produtos com uma experiência premium, responsiva e pronta para partilhar.' },
+  { src: 'https://cdn.creativeclaw.co/u/14466949/videos/7df8835e-2d90-4480-86fe-b2a59a2a45fa.mp4', index: '01 / ABERTURA', title: 'O teu negócio começa aqui.', text: 'Uma entrada cinematográfica para o Product Hub, com o produto no centro e sem ruído visual.' },
+  { src: 'https://cdn.creativeclaw.co/u/14466949/videos/8ecd2354-e0e4-4cb3-8820-d52cbf4fab89.mp4', index: '02 / ACESSO', title: 'Entra. Continua. Está tudo no lugar.', text: 'O acesso acontece sem tirar o utilizador da experiência.' },
+  { src: 'https://cdn.creativeclaw.co/u/14466949/videos/c3ac8ca4-44dd-4881-8ccb-fd490f92b4d0.mp4', index: '03 / WORKSPACE', title: 'O teu workspace ganha vida.', text: 'Organiza produtos, categorias e a tua presença digital num só espaço.' },
+  { src: 'https://cdn.creativeclaw.co/u/14466949/videos/5c0e25e5-cbbd-4542-87eb-90a0656402b2.mp4', index: '04 / VITRINE', title: 'Uma vitrine que parece tua.', text: 'Apresenta os teus produtos com uma experiência premium, responsiva e pronta para partilhar.' },
 ];
 
 export default function Home() {
@@ -57,7 +58,7 @@ export default function Home() {
       <section className={styles.videoRail} id="videos">
         {videos.map((video) => (
           <section className={styles.videoSection} key={video.src}>
-            <video autoPlay muted loop playsInline preload="auto" src={video.src} aria-hidden="true" />
+            <ScrollVideo src={video.src} className={styles.videoBackground} ariaLabel={`${video.index}: ${video.title}`} />
             <div className={styles.videoCopy}>
               <span className={styles.videoIndex}>{video.index}</span>
               <h2>{video.title}</h2>
