@@ -1,0 +1,22 @@
+/* Product Hub — premium visual layer */
+:root{--ph-bg:#08090b;--ph-surface:#101216;--ph-surface-2:#15181e;--ph-line:rgba(255,255,255,.09);--ph-text:#f5f7fa;--ph-muted:#8d95a3;--ph-accent:#7c9cff;--ph-accent-2:#9d7cff;--ph-good:#62d39b}
+html{background:var(--ph-bg)}
+body{background:var(--ph-bg);color:var(--ph-text);font-family:'DM Sans',system-ui,sans-serif}
+.dashboard-shell,.dashboard-page,.dashboard-main,.dashboard-content{background:var(--ph-bg)!important;color:var(--ph-text)}
+.dashboard-sidebar{background:rgba(11,12,15,.92)!important;border-right:1px solid var(--ph-line)!important;backdrop-filter:blur(18px)}
+.dashboard-topbar{background:rgba(8,9,11,.78)!important;border-bottom:1px solid var(--ph-line)!important;backdrop-filter:blur(18px)}
+.dashboard-sidebar a,.dashboard-nav a{color:var(--ph-muted)!important;transition:color .2s ease,background .2s ease,transform .2s ease}
+.dashboard-sidebar a:hover,.dashboard-nav a:hover{color:var(--ph-text)!important;background:rgba(255,255,255,.055)!important;transform:translateX(2px)}
+.dashboard-sidebar a.active,.dashboard-nav a.active{color:var(--ph-text)!important;background:linear-gradient(90deg,rgba(124,156,255,.16),rgba(157,124,255,.06))!important}
+.metric-card,.dashboard-card,.analytics-card,.product-card,.dashboard-table,.settings-card{background:linear-gradient(145deg,rgba(20,23,29,.96),rgba(12,14,18,.96))!important;border:1px solid var(--ph-line)!important;box-shadow:0 18px 60px rgba(0,0,0,.24)!important;color:var(--ph-text)!important}
+.metric-card:hover,.dashboard-card:hover,.product-card:hover{border-color:rgba(124,156,255,.25)!important;transform:translateY(-2px);transition:transform .22s ease,border-color .22s ease}
+.dashboard-table th{color:#aeb6c3!important;border-color:var(--ph-line)!important}
+.dashboard-table td{color:#e7eaf0!important;border-color:var(--ph-line)!important}
+.dashboard-table tr:hover td{background:rgba(255,255,255,.025)!important}
+button.primary,.primary{background:linear-gradient(135deg,#eef2ff,#bfcaff)!important;color:#0a0c10!important;border:0!important;box-shadow:0 10px 30px rgba(124,156,255,.18)!important}
+button.primary:hover,.primary:hover{transform:translateY(-1px);filter:brightness(1.04)}
+input,textarea,select{background:#0d1014!important;color:var(--ph-text)!important;border-color:var(--ph-line)!important}
+input::placeholder,textarea::placeholder{color:#69717e!important}
+.hub-logo{background:linear-gradient(135deg,#7c9cff,#9d7cff)!important;color:#fff!important;box-shadow:0 8px 25px rgba(124,156,255,.22)}
+@media(max-width:900px){.dashboard-sidebar{background:#0b0d10!important}.dashboard-topbar{background:#0b0d10!important}}
+@media(prefers-reduced-motion:reduce){.metric-card:hover,.dashboard-card:hover,.product-card:hover,.dashboard-sidebar a:hover,.primary:hover{transform:none}}
