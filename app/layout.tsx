@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import './product-hub-theme.css';
 import './analytics-premium.css';
+import './dashboard-finish.css';
 import '../dashboard-overrides.css';
 import './auth-overrides.css';
 
