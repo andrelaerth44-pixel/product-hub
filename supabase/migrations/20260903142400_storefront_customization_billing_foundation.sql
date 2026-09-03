@@ -11,8 +11,10 @@ create table if not exists public.organization_billing (
 );
 
 alter table public.organization_billing enable row level security;
-create policy if not exists billing_member_read on public.organization_billing for select to authenticated using (public.is_org_member(organization_id));
-create policy if not exists billing_admin_write on public.organization_billing for all to authenticated using (public.is_org_admin(organization_id)) with check (public.is_org_admin(organization_id));
+drop policy if exists billing_member_read on public.organization_billing;
+create policy billing_member_read on public.organization_billing for select to authenticated using (public.is_org_member(organization_id));
+drop policy if exists billing_admin_write on public.organization_billing;
+create policy billing_admin_write on public.organization_billing for all to authenticated using (public.is_org_admin(organization_id)) with check (public.is_org_admin(organization_id));
 
 insert into public.organization_billing (organization_id)
 select o.id from public.organizations o
