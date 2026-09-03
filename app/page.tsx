@@ -77,18 +77,24 @@ export default function Home() {
     };
 
     const onWheel = (event: WheelEvent) => {
-      if (isTouchDevice || locked.current || Math.abs(event.deltaY) < 8) return;
+      if (isTouchDevice || Math.abs(event.deltaY) < 8) return;
       event.preventDefault();
-      moveToStep(activeIndex.current + (event.deltaY > 0 ? 1 : -1));
+      if (locked.current) return;
+
+      // Roda do mouse para a frente (para longe do utilizador) = deltaY negativo.
+      // Isso deve sempre avançar na apresentação: Vídeo 1 → 2 → 3 → 4 → Login.
+      const forward = event.deltaY < 0;
+      moveToStep(activeIndex.current + (forward ? 1 : -1));
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (locked.current || leaving) return;
       const forward = ['ArrowDown', 'ArrowRight', 'PageDown', ' '].includes(event.key);
       const backward = ['ArrowUp', 'ArrowLeft', 'PageUp'].includes(event.key);
-      if (!forward && !backward) return;
+      const enterFinal = event.key === 'Enter' && activeIndex.current === videos.length - 1;
+      if (!forward && !backward && !enterFinal) return;
       event.preventDefault();
-      moveToStep(activeIndex.current + (forward ? 1 : -1));
+      moveToStep(activeIndex.current + ((forward || enterFinal) ? 1 : -1));
     };
 
     const onTouchStart = (event: TouchEvent) => {
@@ -132,7 +138,7 @@ export default function Home() {
       aria-label="Introdução do Product Hub"
       data-step={currentStep}
     >
-      <div className={styles.depthStage} aria-live="polite">
+      <div className={styles.depthStage}>
         {videos.map((video, index) => {
           const relative = index - currentStep;
           const state = relative === 0 ? 'active' : relative === -1 ? 'previous' : relative === 1 ? 'next' : relative < 0 ? 'past' : 'future';
