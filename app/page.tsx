@@ -77,12 +77,11 @@ export default function Home() {
     };
 
     const onWheel = (event: WheelEvent) => {
-      if (isTouchDevice || Math.abs(event.deltaY) < 8) return;
+      if (isTouchDevice) return;
       event.preventDefault();
-      if (locked.current) return;
+      if (Math.abs(event.deltaY) < 8 || locked.current) return;
 
       // Roda do mouse para a frente (para longe do utilizador) = deltaY negativo.
-      // Isso deve sempre avançar na apresentação: Vídeo 1 → 2 → 3 → 4 → Login.
       const forward = event.deltaY < 0;
       moveToStep(activeIndex.current + (forward ? 1 : -1));
     };
@@ -141,7 +140,9 @@ export default function Home() {
       <div className={styles.depthStage}>
         {videos.map((video, index) => {
           const relative = index - currentStep;
-          const state = relative === 0 ? 'active' : relative === -1 ? 'previous' : relative === 1 ? 'next' : relative < 0 ? 'past' : 'future';
+          if (Math.abs(relative) > 1) return null;
+
+          const state = relative === 0 ? 'active' : relative < 0 ? 'previous' : 'next';
 
           return (
             <section
@@ -150,7 +151,7 @@ export default function Home() {
               aria-hidden={relative !== 0}
               key={video.src}
             >
-              <ScrollVideo src={video.src} className={styles.videoBackground} ariaLabel={`${video.index}: ${video.title}`} />
+              <ScrollVideo src={video.src} active={relative === 0} className={styles.videoBackground} ariaLabel={`${video.index}: ${video.title}`} />
               <div className={styles.videoCopy}>
                 <span className={styles.videoIndex}>{video.index}</span>
                 <h1>{video.title}</h1>
