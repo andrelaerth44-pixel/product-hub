@@ -7,11 +7,13 @@ export async function GET(request: Request) {
   const next = url.searchParams.get('next') || '/dashboard';
   const safeNext = next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard';
 
-  if (code) {
-    const supabase = await createClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return NextResponse.redirect(new URL(safeNext, url.origin));
-  }
+  if (!code) return NextResponse.redirect(new URL('/login?error=missing_auth_code', url.origin));
 
-  return NextResponse.redirect(new URL('/login?error=auth_callback', url.origin));
+  const supabase = await createClient();
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  if (error) return NextResponse.redirect(new URL('/login?error=auth_callback', url.origin));
+
+  const response = NextResponse.redirect(new URL(safeNext, url.origin));
+  response.headers.set('Cache-Control', 'no-store');
+  return response;
 }
