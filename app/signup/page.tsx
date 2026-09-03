@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { ArrowRight, Eye, EyeOff, UserPlus } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
