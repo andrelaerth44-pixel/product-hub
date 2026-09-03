@@ -18,14 +18,8 @@ export async function proxy(request: NextRequest) {
   });
   await supabase.auth.getUser();
 
-  const pathname = request.nextUrl.pathname;
-  const userAgent = request.headers.get('user-agent') || '';
-  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(userAgent);
-  if (isMobile && pathname === '/dashboard') {
-    const url = request.nextUrl.clone();
-    url.pathname = '/dashboard/mobile';
-    return NextResponse.redirect(url);
-  }
+  // Keep the real dashboard for every device. The dashboard already has
+  // responsive layouts for products, analytics, storefront and settings.
   return response;
 }
 
