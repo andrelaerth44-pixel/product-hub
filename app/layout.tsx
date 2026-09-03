@@ -6,6 +6,7 @@ import './dashboard-finish.css';
 import './product-hub-overrides.css';
 import '../dashboard-overrides.css';
 import './auth-overrides.css';
+import { HubAssist } from '@/components/hub-assist';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://product-hub-git-main-amatch-737.vercel.app';
 
@@ -21,4 +22,6 @@ export const metadata: Metadata = {
   icons: { icon: '/icon.svg', shortcut: '/icon.svg', apple: '/icon.svg' },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="pt"><body>{children}</body></html>; }
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return <html lang="pt"><body>{children}<HubAssist /></body></html>;
+}
