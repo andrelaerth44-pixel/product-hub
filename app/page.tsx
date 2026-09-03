@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { ArrowRight } from 'lucide-react';
 import { ScrollVideo } from '@/components/scroll-video';
 import styles from './home.module.css';
 
@@ -20,12 +21,25 @@ export default function Home() {
   const pointerFrame = useRef<number | null>(null);
   const pointerTarget = useRef({ x: 0, y: 0 });
   const pointerCurrent = useRef({ x: 0, y: 0 });
+  const [touchDevice, setTouchDevice] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+
+  const goToLogin = () => {
+    if (locked.current || leaving) return;
+    locked.current = true;
+    setLeaving(true);
+    window.setTimeout(() => router.replace('/login'), 520);
+  };
 
   useEffect(() => {
     const rail = railRef.current;
     if (!rail) return;
     const sections = Array.from(rail.querySelectorAll<HTMLElement>('[data-intro-index]'));
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+    const isTouchDevice = hasTouch && !hasFinePointer;
+    setTouchDevice(isTouchDevice);
 
     const observer = new IntersectionObserver((entries) => {
       for (const entry of entries) {
@@ -45,7 +59,7 @@ export default function Home() {
     };
 
     const onPointerMove = (event: PointerEvent) => {
-      if (reducedMotion.matches || event.pointerType === 'touch') return;
+      if (reducedMotion.matches || event.pointerType === 'touch' || isTouchDevice) return;
       const rect = rail.getBoundingClientRect();
       pointerTarget.current.x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
       pointerTarget.current.y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
@@ -57,26 +71,26 @@ export default function Home() {
     };
 
     const onWheel = (event: WheelEvent) => {
-      if (locked.current || Math.abs(event.deltaY) < 8) return;
+      // Touch/mobile devices never use wheel navigation. Desktop keeps the cinematic wheel flow.
+      if (isTouchDevice || locked.current || Math.abs(event.deltaY) < 8) return;
       event.preventDefault();
       const direction = event.deltaY > 0 ? 1 : -1;
       const next = activeIndex.current + direction;
       if (next >= sections.length) {
-        locked.current = true;
-        router.replace('/login');
+        goToLogin();
         return;
       }
       if (next < 0) return;
       locked.current = true;
       activeIndex.current = next;
-      sections[next].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      sections[next].scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start' });
       window.setTimeout(() => { locked.current = false; }, 850);
     };
 
     rail.addEventListener('pointermove', onPointerMove, { passive: true });
     rail.addEventListener('pointerleave', resetPointer, { passive: true });
     rail.addEventListener('wheel', onWheel, { passive: false });
-    if (!reducedMotion.matches) pointerFrame.current = window.requestAnimationFrame(renderPointer);
+    if (!reducedMotion.matches && hasFinePointer) pointerFrame.current = window.requestAnimationFrame(renderPointer);
 
     return () => {
       observer.disconnect();
@@ -85,16 +99,21 @@ export default function Home() {
       rail.removeEventListener('wheel', onWheel);
       if (pointerFrame.current !== null) window.cancelAnimationFrame(pointerFrame.current);
     };
-  }, [router]);
+  }, [router, leaving]);
 
   return (
-    <main className={styles.sequence} ref={railRef} aria-label="Introdução do Product Hub">
+    <main className={`${styles.sequence} ${leaving ? styles.leaving : ''}`} ref={railRef} aria-label="Introdução do Product Hub">
       {videos.map((video, index) => (
         <section className={styles.videoSection} data-intro-index={index} key={video.src}>
           <ScrollVideo src={video.src} className={styles.videoBackground} ariaLabel={`${video.index}: ${video.title}`} />
           <div className={styles.videoCopy}>
             <span className={styles.videoIndex}>{video.index}</span>
             <h1>{video.title}</h1>
+            {touchDevice && index === videos.length - 1 && (
+              <button className={styles.continueButton} type="button" onClick={goToLogin} disabled={leaving}>
+                Continuar para entrar <ArrowRight size={17} />
+              </button>
+            )}
           </div>
         </section>
       ))}
