@@ -9,6 +9,7 @@ import './auth-overrides.css';
 export const metadata: Metadata = {
   title: 'Product Hub — Todos os teus produtos. Num só lugar.',
   description: 'Cria uma vitrine profissional para tudo o que vendes e partilha com um único link.',
+  icons: { icon: '/icon.svg', shortcut: '/icon.svg', apple: '/icon.svg' },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
