@@ -17,11 +17,16 @@ export default function Home() {
   const railRef = useRef<HTMLElement>(null);
   const activeIndex = useRef(0);
   const locked = useRef(false);
+  const pointerFrame = useRef<number | null>(null);
+  const pointerTarget = useRef({ x: 0, y: 0 });
+  const pointerCurrent = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const rail = railRef.current;
     if (!rail) return;
     const sections = Array.from(rail.querySelectorAll<HTMLElement>('[data-intro-index]'));
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
     const observer = new IntersectionObserver((entries) => {
       for (const entry of entries) {
         if (entry.isIntersecting && entry.intersectionRatio >= 0.7) {
@@ -30,6 +35,26 @@ export default function Home() {
       }
     }, { threshold: [0.7] });
     sections.forEach((section) => observer.observe(section));
+
+    const renderPointer = () => {
+      pointerCurrent.current.x += (pointerTarget.current.x - pointerCurrent.current.x) * 0.075;
+      pointerCurrent.current.y += (pointerTarget.current.y - pointerCurrent.current.y) * 0.075;
+      rail.style.setProperty('--mouse-x', pointerCurrent.current.x.toFixed(3));
+      rail.style.setProperty('--mouse-y', pointerCurrent.current.y.toFixed(3));
+      pointerFrame.current = window.requestAnimationFrame(renderPointer);
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (reducedMotion.matches || event.pointerType === 'touch') return;
+      const rect = rail.getBoundingClientRect();
+      pointerTarget.current.x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+      pointerTarget.current.y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+    };
+
+    const resetPointer = () => {
+      pointerTarget.current.x = 0;
+      pointerTarget.current.y = 0;
+    };
 
     const onWheel = (event: WheelEvent) => {
       if (locked.current || Math.abs(event.deltaY) < 8) return;
@@ -47,8 +72,19 @@ export default function Home() {
       sections[next].scrollIntoView({ behavior: 'smooth', block: 'start' });
       window.setTimeout(() => { locked.current = false; }, 850);
     };
+
+    rail.addEventListener('pointermove', onPointerMove, { passive: true });
+    rail.addEventListener('pointerleave', resetPointer, { passive: true });
     rail.addEventListener('wheel', onWheel, { passive: false });
-    return () => { observer.disconnect(); rail.removeEventListener('wheel', onWheel); };
+    if (!reducedMotion.matches) pointerFrame.current = window.requestAnimationFrame(renderPointer);
+
+    return () => {
+      observer.disconnect();
+      rail.removeEventListener('pointermove', onPointerMove);
+      rail.removeEventListener('pointerleave', resetPointer);
+      rail.removeEventListener('wheel', onWheel);
+      if (pointerFrame.current !== null) window.cancelAnimationFrame(pointerFrame.current);
+    };
   }, [router]);
 
   return (
