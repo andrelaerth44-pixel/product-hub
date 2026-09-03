@@ -15,7 +15,8 @@ const videos = [
 export default function Home() {
   const router = useRouter();
   const railRef = useRef<HTMLElement>(null);
-  const navigating = useRef(false);
+  const activeIndex = useRef(0);
+  const locked = useRef(false);
 
   useEffect(() => {
     const rail = railRef.current;
@@ -23,21 +24,31 @@ export default function Home() {
     const sections = Array.from(rail.querySelectorAll<HTMLElement>('[data-intro-index]'));
     const observer = new IntersectionObserver((entries) => {
       for (const entry of entries) {
-        if (!entry.isIntersecting || entry.intersectionRatio < 0.7) continue;
-        const index = Number((entry.target as HTMLElement).dataset.introIndex);
-        if (index === sections.length - 1 && !navigating.current) {
-          const timer = window.setTimeout(() => {
-            if (!navigating.current) {
-              navigating.current = true;
-              router.replace('/login');
-            }
-          }, 450);
-          return () => window.clearTimeout(timer);
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.7) {
+          activeIndex.current = Number((entry.target as HTMLElement).dataset.introIndex || 0);
         }
       }
     }, { threshold: [0.7] });
     sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
+
+    const onWheel = (event: WheelEvent) => {
+      if (locked.current || Math.abs(event.deltaY) < 8) return;
+      event.preventDefault();
+      const direction = event.deltaY > 0 ? 1 : -1;
+      const next = activeIndex.current + direction;
+      if (next >= sections.length) {
+        locked.current = true;
+        router.replace('/login');
+        return;
+      }
+      if (next < 0) return;
+      locked.current = true;
+      activeIndex.current = next;
+      sections[next].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.setTimeout(() => { locked.current = false; }, 850);
+    };
+    rail.addEventListener('wheel', onWheel, { passive: false });
+    return () => { observer.disconnect(); rail.removeEventListener('wheel', onWheel); };
   }, [router]);
 
   return (
