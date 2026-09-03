@@ -10,13 +10,22 @@ export async function proxy(request: NextRequest) {
     cookies: {
       getAll() { return request.cookies.getAll(); },
       setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value));
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
         response = NextResponse.next({ request });
         cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
       },
     },
   });
   await supabase.auth.getUser();
+
+  const pathname = request.nextUrl.pathname;
+  const userAgent = request.headers.get('user-agent') || '';
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(userAgent);
+  if (isMobile && pathname === '/dashboard') {
+    const url = request.nextUrl.clone();
+    url.pathname = '/dashboard/mobile';
+    return NextResponse.redirect(url);
+  }
   return response;
 }
 
