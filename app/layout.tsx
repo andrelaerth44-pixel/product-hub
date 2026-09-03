@@ -3,17 +3,16 @@ import './globals.css';
 import './product-hub-theme.css';
 import '../dashboard-overrides.css';
 import './auth-overrides.css';
-import FirstVisitIntro from '@/components/first-visit-intro';
 
 export const metadata: Metadata = {
-  title: 'Product Hub — All your products. One place.',
-  description: 'Create a beautiful storefront for everything you sell and share it with one simple link.',
+  title: 'Product Hub — Todos os teus produtos. Num só lugar.',
+  description: 'Cria uma vitrine profissional para tudo o que vendes e partilha com um único link.',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt">
-      <body>{children}<FirstVisitIntro /></body>
+      <body>{children}</body>
     </html>
   );
 }
