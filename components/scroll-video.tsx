@@ -6,9 +6,10 @@ type ScrollVideoProps = {
   src: string;
   className?: string;
   ariaLabel?: string;
+  active?: boolean;
 };
 
-export function ScrollVideo({ src, className, ariaLabel }: ScrollVideoProps) {
+export function ScrollVideo({ src, className, ariaLabel, active = true }: ScrollVideoProps) {
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -19,32 +20,27 @@ export function ScrollVideo({ src, className, ariaLabel }: ScrollVideoProps) {
     video.loop = true;
     video.playsInline = true;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.55) {
-          void video.play().catch(() => undefined);
-        } else {
-          video.pause();
-        }
-      },
-      { threshold: [0, 0.55, 0.8] }
-    );
+    if (active) {
+      void video.play().catch(() => undefined);
+    } else {
+      video.pause();
+    }
 
-    observer.observe(video);
-    return () => observer.disconnect();
-  }, []);
+    return () => video.pause();
+  }, [active]);
 
   return (
     <video
       ref={ref}
       className={className}
       src={src}
-      autoPlay
+      autoPlay={active}
       muted
       loop
       playsInline
-      preload="metadata"
+      preload={active ? 'auto' : 'metadata'}
       aria-label={ariaLabel}
+      disablePictureInPicture
     />
   );
 }
