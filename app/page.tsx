@@ -32,7 +32,7 @@ export default function Home() {
     if (next >= videos.length) {
       locked.current = true;
       setLeaving(true);
-      window.setTimeout(() => router.replace('/login'), 680);
+      window.setTimeout(() => router.replace('/login'), 760);
       return;
     }
 
@@ -41,7 +41,7 @@ export default function Home() {
     setCurrentStep(next);
     window.setTimeout(() => {
       locked.current = false;
-    }, 820);
+    }, 900);
   };
 
   const goToLogin = () => moveToStep(videos.length);
@@ -77,7 +77,6 @@ export default function Home() {
     };
 
     const onWheel = (event: WheelEvent) => {
-      // Wheel is a step controller, never a page scroll. Touch-only devices never use it.
       if (isTouchDevice || locked.current || Math.abs(event.deltaY) < 8) return;
       event.preventDefault();
       moveToStep(activeIndex.current + (event.deltaY > 0 ? 1 : -1));
@@ -158,9 +157,6 @@ export default function Home() {
             </section>
           );
         })}
-      </div>
-      <div className={styles.stepIndicator} aria-hidden="true">
-        {videos.map((video, index) => <span className={index === currentStep ? styles.dotActive : ''} key={video.index} />)}
       </div>
     </main>
   );
