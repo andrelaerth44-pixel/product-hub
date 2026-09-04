@@ -1,7 +1,10 @@
-/* Product Hub — consistent 16px content offset across every workspace section. */
-.main-shell{margin-left:152px!important}
-.page-content{margin-left:0!important;margin-right:0!important;padding-left:16px!important;padding-right:16px!important}
-.settings-wrap{margin-left:0!important;margin-right:0!important;padding-left:16px!important;padding-right:16px!important}
-.product-create-layout{margin-left:0!important;margin-right:0!important}
-.editor{margin-left:0!important;margin-right:0!important}
-@media(max-width:620px){.main-shell{margin-left:0!important}.page-content,.settings-wrap{padding-left:12px!important;padding-right:12px!important}.product-create-layout,.editor{margin-left:0!important;margin-right:0!important}}
+/* Product Hub — compact workspace: only a tiny 8px visual gap after the fixed sidebar. */
+.main-shell{margin-left:248px!important;min-width:0!important;transition:margin-right .22s ease!important}
+.page-content{max-width:none!important;margin:0!important;padding:8px 8px 32px!important}
+.settings-wrap{max-width:none!important;margin:0!important;padding:8px 8px 32px!important}
+.product-create-layout{max-width:none!important;margin-left:0!important;margin-right:0!important;gap:8px!important}
+.editor{max-width:none!important;margin-left:0!important;margin-right:0!important;gap:8px!important}
+.dashboard-section,.product-panel,.analytics-grid,.metric-grid{margin-left:0!important;margin-right:0!important}
+.hub-assist-open .main-shell{margin-right:30vw!important}
+@media(max-width:900px){.hub-assist-open .main-shell{margin-right:30vw!important}}
+@media(max-width:620px){.main-shell{margin-left:0!important}.page-content,.settings-wrap{padding-left:8px!important;padding-right:8px!important}.hub-assist-open .main-shell{margin-right:0!important}}
