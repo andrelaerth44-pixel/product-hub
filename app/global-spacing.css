@@ -5,6 +5,9 @@
 .product-create-layout{max-width:none!important;margin-left:0!important;margin-right:0!important;gap:8px!important}
 .editor{max-width:none!important;margin-left:0!important;margin-right:0!important;gap:8px!important}
 .dashboard-section,.product-panel,.analytics-grid,.metric-grid{margin-left:0!important;margin-right:0!important}
+.side-nav a{border:0;background:transparent;text-align:left;padding:11px 12px;border-radius:10px;display:flex;gap:12px;align-items:center;color:#667287;font-size:14px;text-decoration:none}
+.side-nav a:hover{background:#e9eef6;color:#20304a}
+.side-nav a.active{background:var(--ph-blue-soft,#eef4ff);color:var(--ph-blue,#1769ff);box-shadow:inset 3px 0 var(--ph-blue,#1769ff)}
 .hub-assist-open .main-shell{margin-right:30vw!important}
 .hub-assist-backdrop-v2{pointer-events:none!important;background:transparent!important}
 .hub-assist-panel-v2{pointer-events:auto!important}
