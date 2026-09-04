@@ -1,0 +1,24 @@
+.hub-assist-launcher{right:18px!important;bottom:18px!important;position:fixed!important;z-index:9999!important;width:68px!important;height:68px!important;will-change:transform!important;transform:translateZ(0)}
+.hub-assist-launcher img{width:68px!important;height:68px!important}
+.hub-assist-backdrop{background:transparent!important;justify-content:flex-end!important;align-items:stretch!important}
+.hub-assist-panel{width:50vw!important;max-width:none!important;min-width:420px!important;height:100dvh!important;border-left:1px solid #d7dee8!important;box-shadow:-18px 0 42px rgba(23,32,51,.12)!important;animation:hubAssistSlideIn .28s cubic-bezier(.22,.8,.24,1) both!important}
+.hub-assist-capabilities,.hub-assist-foot{display:none!important}
+.hub-assist-header{height:64px!important;padding:0 16px!important}
+.hub-assist-mark{width:38px!important;height:38px!important;border-radius:10px!important}
+.hub-assist-mark img{width:38px!important;height:38px!important}
+.hub-assist-title{gap:9px!important}
+.hub-assist-title strong{font-size:15px!important}
+.hub-assist-title span{display:none!important}
+.hub-assist-body{padding:16px!important}
+.hub-assist-welcome{padding:0 0 10px!important}
+.hub-assist-welcome-icon,.hub-assist-welcome h2,.hub-assist-welcome p{display:none!important}
+.hub-assist-suggestions{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;margin-bottom:10px!important}
+.hub-assist-suggestions button{padding:9px 10px!important;border-radius:10px!important}
+.hub-assist-suggestions span{font-size:11px!important}
+.hub-assist-messages{gap:9px!important}
+.hub-assist-bubble{max-width:82%!important;padding:10px 12px!important;font-size:13px!important;line-height:1.45!important}
+.hub-assist-composer{padding:11px 12px!important}
+.hub-assist-composer textarea{font-size:13px!important}
+@keyframes hubAssistSlideIn{from{opacity:.4;transform:translate3d(24px,0,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@media(max-width:620px){.hub-assist-launcher{right:14px!important;bottom:14px!important;width:62px!important;height:62px!important}.hub-assist-launcher img{width:62px!important;height:62px!important}.hub-assist-panel{width:100vw!important;min-width:0!important}.hub-assist-suggestions{grid-template-columns:1fr!important}}
+@media(prefers-reduced-motion:reduce){.hub-assist-panel{animation:none!important}}
