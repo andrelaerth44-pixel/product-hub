@@ -4,6 +4,7 @@ import './product-hub-theme.css';
 import './analytics-premium.css';
 import './dashboard-finish.css';
 import './product-hub-overrides.css';
+import './hub-assist-overrides.css';
 import '../dashboard-overrides.css';
 import './auth-overrides.css';
 import { HubAssist } from '@/components/hub-assist';
