@@ -8,6 +8,7 @@ import './hub-assist-overrides.css';
 import '../dashboard-overrides.css';
 import './auth-overrides.css';
 import { HubAssist } from '@/components/hub-assist';
+import { HubAssistEnhancer } from '@/components/hub-assist-enhancer';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://product-hub-git-main-amatch-737.vercel.app';
 
@@ -24,5 +25,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="pt"><body>{children}<HubAssist /></body></html>;
+  return <html lang="pt"><body>{children}<HubAssist /><HubAssistEnhancer /></body></html>;
 }
