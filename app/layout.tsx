@@ -6,6 +6,7 @@ import './dashboard-finish.css';
 import './product-hub-overrides.css';
 import './hub-assist-overrides.css';
 import './hub-assist-v2.css';
+import './global-spacing.css';
 import '../dashboard-overrides.css';
 import './auth-overrides.css';
 import { HubAssistV2 } from '@/components/hub-assist-v2';
