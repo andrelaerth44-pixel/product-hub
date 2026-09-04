@@ -6,5 +6,9 @@
 .editor{max-width:none!important;margin-left:0!important;margin-right:0!important;gap:8px!important}
 .dashboard-section,.product-panel,.analytics-grid,.metric-grid{margin-left:0!important;margin-right:0!important}
 .hub-assist-open .main-shell{margin-right:30vw!important}
+.hub-assist-backdrop-v2{pointer-events:none!important;background:transparent!important}
+.hub-assist-panel-v2{pointer-events:auto!important}
+.hub-assist-launcher-v2{background-image:url('/hub-assist-robot.svg')!important;background-color:transparent!important}
+.hub-assist-mark-v2{background-image:url('/hub-assist-robot.svg')!important;background-color:transparent!important}
 @media(max-width:900px){.hub-assist-open .main-shell{margin-right:30vw!important}}
 @media(max-width:620px){.main-shell{margin-left:0!important}.page-content,.settings-wrap{padding-left:8px!important;padding-right:8px!important}.hub-assist-open .main-shell{margin-right:0!important}}
