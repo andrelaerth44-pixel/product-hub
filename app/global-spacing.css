@@ -1,17 +1,16 @@
-/* Product Hub — compact workspace: only a tiny 8px visual gap after the fixed sidebar. */
-.main-shell{margin-left:248px!important;min-width:0!important;transition:margin-right .22s ease!important}
-.page-content{max-width:none!important;margin:0!important;padding:8px 8px 32px!important}
-.settings-wrap{max-width:none!important;margin:0!important;padding:8px 8px 32px!important}
-.product-create-layout{max-width:none!important;margin-left:0!important;margin-right:0!important;gap:8px!important}
-.editor{max-width:none!important;margin-left:0!important;margin-right:0!important;gap:8px!important}
+/* Product Hub — ultra-tight workspace spacing: approximately 1mm / 4px. */
+.main-shell{margin-left:248px!important;min-width:0!important;max-width:none!important;transition:margin-right .22s ease!important}
+.page-content{max-width:none!important;width:100%!important;margin:0!important;padding:4px 4px 28px!important}
+.settings-wrap{max-width:none!important;width:100%!important;margin:0!important;padding:4px 4px 28px!important}
+.product-create-layout{max-width:none!important;margin-left:0!important;margin-right:0!important;gap:4px!important}
+.editor{max-width:none!important;margin-left:0!important;margin-right:0!important;gap:4px!important}
 .dashboard-section,.product-panel,.analytics-grid,.metric-grid{margin-left:0!important;margin-right:0!important}
-.side-nav a{border:0;background:transparent;text-align:left;padding:11px 12px;border-radius:10px;display:flex;gap:12px;align-items:center;color:#667287;font-size:14px;text-decoration:none}
-.side-nav a:hover{background:#e9eef6;color:#20304a}
-.side-nav a.active{background:var(--ph-blue-soft,#eef4ff);color:var(--ph-blue,#1769ff);box-shadow:inset 3px 0 var(--ph-blue,#1769ff)}
 .hub-assist-open .main-shell{margin-right:30vw!important}
 .hub-assist-backdrop-v2{pointer-events:none!important;background:transparent!important}
 .hub-assist-panel-v2{pointer-events:auto!important}
-.hub-assist-launcher-v2{background-image:url('/hub-assist-robot.svg')!important;background-color:transparent!important}
-.hub-assist-mark-v2{background-image:url('/hub-assist-robot.svg')!important;background-color:transparent!important}
+.hub-assist-launcher-v2{background-image:none!important;background-color:transparent!important}
+.hub-assist-launcher-v2 img{opacity:1!important;width:72px!important;height:72px!important;object-fit:contain!important;object-position:center!important}
+.hub-assist-mark-v2{background-image:none!important;background-color:transparent!important}
+.hub-assist-mark-v2 img{opacity:1!important;width:42px!important;height:42px!important;object-fit:contain!important;object-position:center!important}
 @media(max-width:900px){.hub-assist-open .main-shell{margin-right:30vw!important}}
-@media(max-width:620px){.main-shell{margin-left:0!important}.page-content,.settings-wrap{padding-left:8px!important;padding-right:8px!important}.hub-assist-open .main-shell{margin-right:0!important}}
+@media(max-width:620px){.main-shell{margin-left:0!important}.page-content,.settings-wrap{padding-left:4px!important;padding-right:4px!important}.hub-assist-open .main-shell{margin-right:0!important}}
