@@ -1,8 +1,10 @@
 'use client';
 
 import { FormEvent, KeyboardEvent, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { BarChart3, ChevronRight, Lightbulb, MessageCircle, Package, Send, Store, X } from 'lucide-react';
+import { BarChart3, ChevronRight, Lightbulb, Package, Send, Store, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+
+const ROBOT_SRC = 'data:image/webp;base64,UklGRmImAABXRUJQVlA4TFYmAAAvEUFzEP9HJmT1r/17RYQlCgEBCWK+U8ALQd6lmUG47aNHI377/qC';
 
 const suggestions = [
   { icon: Package, label: 'Melhorar um produto', prompt: 'Ajuda-me a melhorar a descrição do meu produto mais recente.' },
@@ -162,7 +164,7 @@ export function HubAssistV2() {
     <>
       {!open && (
         <button type="button" className="hub-assist-launcher-v2" onClick={() => setOpen(true)} aria-label="Abrir Assistente de Produtos">
-          <img src="/hub-assist-silhouette.svg" alt="" aria-hidden="true" />
+          <img src={ROBOT_SRC} alt="" aria-hidden="true" />
         </button>
       )}
 
@@ -171,7 +173,7 @@ export function HubAssistV2() {
           <aside className="hub-assist-panel-v2" role="dialog" aria-modal="true" aria-label="Assistente de Produtos" onMouseDown={e => e.stopPropagation()}>
             <header className="hub-assist-header-v2">
               <div className="hub-assist-title-v2">
-                <div className="hub-assist-mark-v2"><img src="/hub-assist-silhouette.svg" alt="" aria-hidden="true" /></div>
+                <div className="hub-assist-mark-v2"><img src={ROBOT_SRC} alt="" aria-hidden="true" /></div>
                 <strong>Assistente de Produtos</strong>
               </div>
               <button type="button" className="hub-assist-close-v2" onClick={() => setOpen(false)} aria-label="Fechar"><X size={18} /></button>
